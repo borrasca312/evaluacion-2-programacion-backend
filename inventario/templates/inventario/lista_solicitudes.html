@@ -29,7 +29,7 @@
             <select class="form-select" name="categoria">
                 <option value="">-- Categoría --</option>
                 {% for c in categorias %}
-                <option value="{{ c.id }}" {% if request.GET.categoria == c.id|stringformat:"s" %}selected{% endif %}>{{
+                <option value="{{ c.id }}" {% if request.GET.categoria == c.id|stringformat:'s' %}selected{% endif %}>{{
                     c.nombre }}</option>
                 {% endfor %}
             </select>
