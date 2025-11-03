@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Detalle de Solicitud - Mesa de Ayuda{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <h3 class="card-title mb-0">{{ solicitud.titulo }}</h3>
+          <span class="badge bg-secondary">{{ solicitud.get_estado_display }}</span>
+        </div>
+        <p class="mt-3">{{ solicitud.descripcion }}</p>
+        <div class="text-muted">
+          <i class="fas fa-tag me-1"></i>{{ solicitud.categoria.nombre }} |
+          <i class="fas fa-flag me-1"></i>{{ solicitud.get_prioridad_display }} |
+          <i class="fas fa-user me-1"></i>Creado por {{ solicitud.creador.username }} |
+          <i class="fas fa-calendar me-1"></i>{{ solicitud.fecha_creacion|date:"d/m/Y H:i" }}
+        </div>
+
+        <div class="mt-3 d-flex gap-2">
+          {% if solicitud.creador == user %}
+          <a href="{% url 'inventario:editar_solicitud' solicitud.id %}" class="btn btn-outline-primary">
+            <i class="fas fa-edit me-1"></i>Editar
+          </a>
+          {% if solicitud.estado != "cerrada" %}
+          <a href="{% url 'inventario:cerrar_solicitud' solicitud.id %}" class="btn btn-outline-success">
+            <i class="fas fa-check me-1"></i>Cerrar
+          </a>
+          {% endif %}
+          <a href="{% url 'inventario:eliminar_solicitud' solicitud.id %}" class="btn btn-outline-danger">
+            <i class="fas fa-trash me-1"></i>Eliminar
+          </a>
+          {% endif %}
+          <a href="{% url 'inventario:lista_solicitudes' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Volver
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <strong><i class="fas fa-comments me-1"></i>Comentarios</strong>
+      </div>
+      <div class="card-body">
+        <ul class="list-group mb-3">
+          {% for c in comentarios %}
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong>{{ c.autor }}</strong>
+                <div>{{ c.cuerpo }}</div>
+              </div>
+              <small class="text-muted">{{ c.creado_en|date:"d/m/Y H:i" }}</small>
+            </div>
+          </li>
+          {% empty %}
+          <li class="list-group-item">No hay comentarios.</li>
+          {% endfor %}
+        </ul>
+
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane me-1"></i>Comentar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <!-- espacio para info adicional si se requiere -->
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitudes - Mesa de Ayuda{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0"><i class="fas fa-list me-2"></i>Solicitudes</h2>
+    <a href="{% url 'inventario:crear_solicitud' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i>Nueva Solicitud
+    </a>
+</div>
+
+<form method="get" class="card card-body mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="q" value="{{ request.GET.q }}"
+                placeholder="Buscar por título o descripción..." />
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="estado">
+                <option value="">-- Estado --</option>
+                <option value="nueva" {% if request.GET.estado == 'nueva' %}selected{% endif %}>Nueva</option>
+                <option value="en_progreso" {% if request.GET.estado == 'en_progreso' %}selected{% endif %}>En progreso
+                </option>
+                <option value="cerrada" {% if request.GET.estado == 'cerrada' %}selected{% endif %}>Cerrada</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="categoria">
+                <option value="">-- Categoría --</option>
+                {% for c in categorias %}
+                <option value="{{ c.id }}" {% if request.GET.categoria == c.id|stringformat:"s" %}selected{% endif %}>{{
+                    c.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-outline-secondary" type="submit">
+                <i class="fas fa-filter me-1"></i>Filtrar
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="list-group">
+    {% for s in solicitudes %}
+    <a href="{% url 'inventario:detalle_solicitud' s.id %}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ s.titulo }}</h5>
+            <small>
+                <span class="badge bg-light text-dark">{{ s.get_estado_display }}</span>
+                <span class="badge bg-info text-dark">{{ s.get_prioridad_display }}</span>
+            </small>
+        </div>
+        <p class="mb-1 text-muted">{{ s.descripcion|truncatewords:25 }}</p>
+        <small class="text-muted">
+            <i class="fas fa-tag me-1"></i>{{ s.categoria.nombre }} |
+            <i class="fas fa-user me-1"></i>{{ s.creador.username }} |
+            <i class="fas fa-calendar me-1"></i>{{ s.fecha_creacion|date:"d/m/Y H:i" }}
+        </small>
+    </a>
+    {% empty %}
+    <div class="alert alert-info">No hay solicitudes.</div>
+    {% endfor %}
+</div>
+{% endblock %}

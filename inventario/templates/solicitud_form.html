@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if editar %}Editar Solicitud{% else %}Nueva Solicitud{% endif %} - Mesa de Ayuda
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title mb-0">
+          {% if editar %}
+          <i class="fas fa-edit me-2"></i>Editar Solicitud
+          {% else %}
+          <i class="fas fa-plus me-2"></i>Nueva Solicitud
+          {% endif %}
+        </h3>
+      </div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">
+              {% if editar %}
+              <i class="fas fa-save me-1"></i>Actualizar
+              {% else %}
+              <i class="fas fa-save me-1"></i>Guardar
+              {% endif %}
+            </button>
+            <a href="{% url 'inventario:lista_solicitudes' %}" class="btn btn-secondary">
+              <i class="fas fa-arrow-left me-1"></i>Cancelar
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

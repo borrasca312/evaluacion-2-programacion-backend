@@ -1,0 +1,20 @@
+{% extends "inventario/base.html" %}
+{% block content %}
+<h1>Solicitudes</h1>
+<a href="{% url 'inventario:crear_solicitud' %}">Nueva solicitud</a>
+<form method="get">
+  <input type="text" name="q" placeholder="Buscar...">
+  <button type="submit">Filtrar</button>
+</form>
+
+<ul>
+{% for s in solicitudes %}
+  <li>
+    <a href="{% url 'inventario:detalle_solicitud' s.id %}">{{ s.titulo }}</a>
+    ({{ s.get_estado_display }} - {{ s.get_prioridad_display }})
+  </li>
+{% empty %}
+  <li>No hay solicitudes.</li>
+{% endfor %}
+</ul>
+{% endblock %}
